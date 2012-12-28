@@ -1,0 +1,8 @@
+
+<tags>
+    <entity name="User">
+        <property name="username">
+            <tag name="required" value="true"/>
+        </property>
+    </entity>    
+</tags>
