@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.text.MessageFormat;
 import java.util.List;
 
 @Service
@@ -22,6 +23,8 @@ public class PropertyServiceImpl implements PropertyService {
 
     @PersistenceContext(unitName = "gifnocPU")
     private EntityManager em;
+
+    private static final String UNDEFINED_PROPERTY_FORMAT = "Invalid property [{0}] for application [{1}] environment [{2}]";
 
     /**
      * createApplication
@@ -113,7 +116,11 @@ public class PropertyServiceImpl implements PropertyService {
             propertyValue = environmentProperty.getValue();
         }
         else {
-            //TO-DO throw exception
+            MessageFormat messageFormat = new MessageFormat(UNDEFINED_PROPERTY_FORMAT);
+            String[] inserts = new String[] {propertyName, appName, envName};
+            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
+            ValidationException validationException = new ValidationException(validationError);
+            throw validationException;
         }
 
         return propertyValue;
