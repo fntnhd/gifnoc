@@ -116,17 +116,13 @@
             <plugin>
                 <groupId>org.atlas</groupId>
                 <artifactId>atlas-maven2</artifactId>
-                <version>2.2</version>
+                <version>2.3</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <configuration>
-                            <configLocation>/Users/Andrews/Documents/Dev/gifnoc/server/src/main/resources/atlas</configLocation>
-                            <rootFolder>/Users/Andrews/Documents/Dev/gifnoc</rootFolder>
-                        </configuration>
                     </execution>
                 </executions>
                 <dependencies>
