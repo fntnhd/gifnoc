@@ -1,4 +1,4 @@
 gifnoc
 ======
 
-Localize external configuration across deployment environments
+Manage external configuration across deployment environments
