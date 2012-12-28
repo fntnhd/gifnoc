@@ -43,7 +43,7 @@ public class SetAndGetApplicationPropertiesSteps {
      * @param propertyValues - list of property values
      * @throws ValidationException
      */
-    @Given("an application named: $appName with environments: $environments that has properties named: $propertyNames with property values: propertyValues")
+    @Given("an application named: $appName with environments: $environments that has properties named: $propertyNames with property values: $propertyValues")
     public void setupProperties(String appName, ExamplesTable environments, ExamplesTable propertyNames, ExamplesTable propertyValues) throws ValidationException {
         String envName, propertyName, propertyValue;
 

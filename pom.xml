@@ -10,6 +10,8 @@
     <modules>
         <module>server</module>
         <module>server-at</module>
+        <module>rs</module>
+        <module>rs-at</module>
     </modules>
 
     <properties>
