@@ -1,0 +1,116 @@
+
+<context>
+    <properties>
+        <property name="model.root" value="${root}/model"/>
+        <property name="project.root" value="${root}/rs"/>
+        <property name="main.resource.root" value="${project.root}/src/main/resources"/>
+        <property name="main.source.root" value="${project.root}/src/main/java"/>
+        <property name="web.root" value="${project.root}/src/main/webapp"/>
+        <property name="generated.source.root" value="${project.root}/target/generated-sources/atlas"/>
+        <property name="test.source.root" value="${project.root}/target/generated-sources/atlas-test"/>
+        <property name="namespace" value="com.us.fountainhead.gifnoc"/>
+        <property name="base.package" value="com/us/fountainhead/gifnoc"/>
+    </properties>
+    <models>
+        <model file="${model.root}/pim.xml" adapter="org.atlas.model.adapter.ea.ModelAdapter"/>
+        <model file="${model.root}/entity.tags.xml" adapter="org.atlas.model.adapter.xml.tag.TagAdapter"/>
+        <model file="${model.root}/boundary.tags.xml" adapter="org.atlas.model.adapter.xml.tag.TagAdapter"/>
+    </models>
+    <primitives file="${model.root}/primitives.xml"/>
+    <templates dir="${main.resource.root}/atlas/templates" />
+    <utilities>
+        <utility name="util" impl="org.atlas.utils.AtlasStringUtils"/>
+        <utility name="model" impl="org.atlas.utils.ModelUtility"/>
+        <utility name="eval" impl="org.atlas.engine.utility.EvaluationUtility"/>
+    </utilities>
+    <conditions>
+        <condition name="notTransient"><![CDATA[!${eval.boolTag(type, 'transient')}]]></condition>
+        <condition name="secure"><![CDATA[${eval.boolTag(type, 'secure')} && ${eval.boolTag(type, 'root')}]]></condition>
+        <condition name="notSecure"><![CDATA[!${eval.boolTag(type, 'secure')} && ${eval.boolTag(type, 'root')}]]></condition>
+    </conditions>
+    <targets>
+        <target name="entity.service.rest"
+                stereotype="entity"
+                condition="notTransient"
+                template="entity.service.rest.vm"
+                outputFile="${name}EntityService.java"
+                outputPath="${generated.source.root}/${base.package}/server/service/rest"
+                overwrite="true"/>
+        <target name="service.rest"
+                stereotype="control"
+                template="service.rest.vm"
+                outputFile="${name}REST.java"
+                outputPath="${generated.source.root}/${base.package}/server/service/rest"
+                overwrite="true"/>
+        <target name="server.service.response"
+                stereotype="control"
+                collection="true"
+                template="server.service.response.vm"
+                outputFile="ServiceResponse.java"
+                outputPath="${generated.source.root}/${base.package}/server/service/rest"
+                overwrite="true"/>
+        <target name="navigation.controller"
+                stereotype="boundary"
+                collection="true"
+                template="navigation.controller.vm"
+                outputFile="NavigationController.java"
+                outputPath="${generated.source.root}/${base.package}/server/mvc"
+                overwrite="true"/>
+        <target name="page.controller"
+                stereotype="boundary"
+                collection="true"
+                template="page.controller.vm"
+                outputFile="PageController.java"
+                outputPath="${main.source.root}/${base.package}/server/mvc"
+                overwrite="false"/>
+        <target name="authentication.manager"
+                stereotype="entity"
+                collection="true"
+                template="authentication.manager.vm"
+                outputFile="SecuredUserAuthenticationManager.java"
+                outputPath="${generated.source.root}/${base.package}/server/security"
+                overwrite="true"/>
+        <target name="secured.user"
+                stereotype="entity"
+                collection="true"
+                template="secured.user.vm"
+                outputFile="SecuredUser.java"
+                outputPath="${generated.source.root}/${base.package}/server/security"
+                overwrite="true"/>
+        <target name="spring.server.context"
+                stereotype="entity"
+                collection="true"
+                template="spring.server.context.vm"
+                outputFile="server-context.xml"
+                outputPath="${main.resource.root}"
+                overwrite="true">
+            <property name="datasource" value="gifnoc"/>
+        </target>
+        <target name="web.xml"
+                stereotype="entity"
+                collection="true"
+                template="web.xml.vm"
+                outputFile="web.xml"
+                outputPath="${web.root}/WEB-INF"
+                overwrite="true">
+            <property name="url.pattern.root" value="gifnoc"/>
+        </target>
+        <target name="urlrewrite.xml"
+                stereotype="entity"
+                collection="true"
+                template="urlrewrite.xml.vm"
+                outputFile="urlrewrite.xml"
+                outputPath="${web.root}/WEB-INF"
+                overwrite="true">
+            <property name="url.pattern.root" value="gifnoc"/>
+        </target>
+        <target name="spring.security.context.xml"
+                stereotype="entity"
+                collection="true"
+                template="spring.security.context.xml.vm"
+                outputFile="security-context.xml"
+                outputPath="${web.root}/WEB-INF/spring"
+                overwrite="true">
+        </target>
+    </targets>
+</context>
