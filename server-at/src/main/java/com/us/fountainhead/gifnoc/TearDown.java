@@ -1,12 +1,11 @@
 package com.us.fountainhead.gifnoc;
 
-import com.us.fountainhead.gifnoc.server.entity.ApplicationDAO;
-import com.us.fountainhead.gifnoc.server.entity.EnvironmentDAO;
-import com.us.fountainhead.gifnoc.server.entity.EnvironmentPropertyDAO;
-import com.us.fountainhead.gifnoc.server.entity.PropertyDAO;
+import com.us.fountainhead.gifnoc.server.entity.*;
 import com.us.fountainhead.gifnoc.server.validate.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Tears down data after tests.
@@ -32,7 +31,12 @@ public class TearDown {
      * @throws ValidationException
      */
     public void execute() throws ValidationException {
-        environmentPropertyDAO.deleteAll();
+        List<EnvironmentProperty> environmentPropertyList = environmentPropertyDAO.findAll();
+        for(EnvironmentProperty ep : environmentPropertyList) {
+            environmentPropertyDAO.delete(ep.getId());
+        }
+
+
         environmentDAO.deleteAll();
         propertyDAO.deleteAll();
         applicationDAO.deleteAll();

@@ -65,7 +65,6 @@ public class PropertyServiceImpl implements PropertyService {
                 }
             }
             if(environment == null) {
-                // TO-DO throw exception
             }
             for(Property p : application.getPropertyList()) {
                 if(p.getName().equals(propertyName)) {
@@ -74,10 +73,8 @@ public class PropertyServiceImpl implements PropertyService {
                 }
             }
             if(property == null) {
-                //TO-DO throw exception
             }
 
-            //TO-DO check if env prop already exists and just update value
 
             EnvironmentProperty environmentProperty = new EnvironmentProperty();
             environmentProperty.setEnvironment(environment);
@@ -86,7 +83,6 @@ public class PropertyServiceImpl implements PropertyService {
             environmentProperty = environmentPropertyDAO.create(environmentProperty);
         }
         else {
-            //TO-DO throw exception
         }
 
     }
