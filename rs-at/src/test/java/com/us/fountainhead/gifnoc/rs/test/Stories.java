@@ -1,4 +1,4 @@
-package com.us.fountainhead.gifnoc;
+package com.us.fountainhead.gifnoc.rs.test;
 
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -11,6 +11,7 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -24,7 +25,14 @@ import java.util.List;
 public class Stories extends JUnitStories {
 
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(CodeLocations.codeLocationFromPath("src/test/resources"), "stories/*.story", "");
+        URL url = CodeLocations.codeLocationFromPath("rs-at/src/test/resources");
+        List<String> storyList = new StoryFinder().findPaths(url, "stories/*.story", "");
+        if(storyList.isEmpty()) {
+            url = CodeLocations.codeLocationFromPath("src/test/resources");
+            storyList = new StoryFinder().findPaths(url, "stories/*.story", "");
+        }
+
+        return storyList;
     }
 
 
