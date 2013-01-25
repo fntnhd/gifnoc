@@ -12,6 +12,7 @@
         <module>server-at</module>
         <module>rs</module>
         <module>rs-at</module>
+        <module>web</module>
     </modules>
 
     <properties>

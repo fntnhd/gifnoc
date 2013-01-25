@@ -1,0 +1,11 @@
+package ${context.getProperty("namespace")}.client.ui;
+
+import com.google.gwt.user.client.ui.*;
+
+/**
+ * ${type.name}
+ */
+public class ${type.name} extends VerticalPanel {
+
+
+}

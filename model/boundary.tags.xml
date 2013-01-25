@@ -3,4 +3,10 @@
     <boundary name="HomeView">
         <tag name="root" value="true"/>
     </boundary>
+    <boundary name="ApplicationView">
+        <tag name="root" value="true"/>
+    </boundary>
+    <boundary name="ApplicationPropertyView">
+        <tag name="root" value="true"/>
+    </boundary>
 </tags>

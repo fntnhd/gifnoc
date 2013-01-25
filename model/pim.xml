@@ -28,6 +28,8 @@
 					<upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="EAID_LI000006__D8BF_427f_8BF1_EA1682F522CB" value="-1"/>
 				</ownedEnd>
 			</packagedElement>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_9DB08EF4_8A52_4236_B426_2C74A7C797CE" name="ApplicationPropertyView" visibility="public"/>
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_783065C3_7DAF_464e_90F0_9ABD5F350D9B" name="ApplicationView" visibility="public"/>
 			<packagedElement xmi:type="uml:Class" xmi:id="EAID_4D2F9B8B_A16B_430d_AFED_98ADDE57A5FB" name="Environment" visibility="public">
 				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_5B56017D_65C3_44b4_84A3_0F7AE40E56F6" name="name" visibility="private" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
 					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000007_65C3_44b4_84A3_0F7AE40E56F6" value="1"/>
@@ -141,6 +143,8 @@
 			</packagedElement>
 		</packagedElement>
 		<thecustomprofile:entity base_Class="EAID_E70D0B38_258F_41d5_AEE7_B7BA3E41AE08"/>
+		<thecustomprofile:boundary base_Class="EAID_9DB08EF4_8A52_4236_B426_2C74A7C797CE"/>
+		<thecustomprofile:boundary base_Class="EAID_783065C3_7DAF_464e_90F0_9ABD5F350D9B"/>
 		<thecustomprofile:entity base_Class="EAID_4D2F9B8B_A16B_430d_AFED_98ADDE57A5FB"/>
 		<thecustomprofile:entity base_Class="EAID_DE689518_98F4_4d92_8E89_ECACFF0B498E"/>
 		<thecustomprofile:boundary base_Class="EAID_B503DD5A_4997_4323_8E06_9272851D7CFE"/>
@@ -197,6 +201,28 @@
 					<Aggregation xmi:id="EAID_D154F0A8_8DB8_48ae_BACE_9F9BB8D3AA0A" start="EAID_4D2F9B8B_A16B_430d_AFED_98ADDE57A5FB" end="EAID_E70D0B38_258F_41d5_AEE7_B7BA3E41AE08"/>
 					<Aggregation xmi:id="EAID_F39D4F36_D8BF_427f_8BF1_EA1682F522CB" start="EAID_2F92CC5C_76F0_4f2d_9102_2B2039FB7EA1" end="EAID_E70D0B38_258F_41d5_AEE7_B7BA3E41AE08"/>
 				</links>
+			</element>
+			<element xmi:idref="EAID_9DB08EF4_8A52_4236_B426_2C74A7C797CE" xmi:type="uml:Class" name="ApplicationPropertyView" scope="public">
+				<model package="EAPK_DA954284_A580_424f_9B21_2D35D3F9F12A" tpos="0" ea_localid="139" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" stereotype="boundary" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Administrator" version="1.0" phase="1.0" created="2013-01-25 13:01:41" modified="2013-01-25 13:02:03" complexity="1" status="Proposed"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<modelDocument/>
+				<tags/>
+				<xrefs value="$XREFPROP=$XID={C9819E57-4003-4f41-AF33-1032951469DB}$XID;$NAM=Stereotypes$NAM;$TYP=element property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=boundary;GUID={01D5563D-C0A2-4a02-A188-6118F2B9206B};@ENDSTEREO;$DES;$CLT={9DB08EF4-8A52-4236-B426-2C74A7C797CE}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+				<extendedProperties tagged="0" package_name="Platform Independent Model"/>
+			</element>
+			<element xmi:idref="EAID_783065C3_7DAF_464e_90F0_9ABD5F350D9B" xmi:type="uml:Class" name="ApplicationView" scope="public">
+				<model package="EAPK_DA954284_A580_424f_9B21_2D35D3F9F12A" tpos="0" ea_localid="138" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" stereotype="boundary" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="Administrator" version="1.0" phase="1.0" created="2013-01-25 13:01:23" modified="2013-01-25 13:01:32" complexity="1" status="Proposed"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<modelDocument/>
+				<tags/>
+				<xrefs value="$XREFPROP=$XID={4325A1FB-5148-404d-8DA1-DB60F9BA2326}$XID;$NAM=Stereotypes$NAM;$TYP=element property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=boundary;GUID={01D5563D-C0A2-4a02-A188-6118F2B9206B};@ENDSTEREO;$DES;$CLT={783065C3-7DAF-464e-90F0-9ABD5F350D9B}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+				<extendedProperties tagged="0" package_name="Platform Independent Model"/>
 			</element>
 			<element xmi:idref="EAID_4D2F9B8B_A16B_430d_AFED_98ADDE57A5FB" xmi:type="uml:Class" name="Environment" scope="public">
 				<model package="EAPK_DA954284_A580_424f_9B21_2D35D3F9F12A" tpos="0" ea_localid="132" ea_eleType="element"/>
@@ -872,14 +898,16 @@
 			<diagram xmi:id="EAID_2FE54892_C192_4655_8F98_2EF3EA829854">
 				<model package="EAPK_DA954284_A580_424f_9B21_2D35D3F9F12A" localID="28" owner="EAPK_DA954284_A580_424f_9B21_2D35D3F9F12A"/>
 				<properties name="Boundaries" type="Logical"/>
-				<project author="Administrator" version="1.0" created="2012-07-12 11:55:16" modified="2012-07-12 13:27:59"/>
+				<project author="Administrator" version="1.0" created="2012-07-12 11:55:16" modified="2013-01-25 13:02:05"/>
 				<style1 value="ShowPrivate=1;ShowProtected=1;ShowPublic=1;HideRelationships=0;Locked=0;Border=1;HighlightForeign=1;PackageContents=1;SequenceNotes=0;ScalePrintImage=0;PPgs.cx=1;PPgs.cy=1;DocSize.cx=850;DocSize.cy=1098;ShowDetails=0;Orientation=P;Zoom=100;ShowTags=0;OpParams=1;VisibleAttributeDetail=0;ShowOpRetType=1;ShowIcons=0;CollabNums=0;HideProps=0;ShowReqs=0;ShowCons=0;PaperSize=1;HideParents=0;UseAlias=0;HideAtts=0;HideOps=0;HideStereo=0;HideElemStereo=0;ShowTests=0;ShowMaint=0;ConnectorNotation=UML 2.1;ExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;ShowNotes=0;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;"/>
-				<style2 value="ExcludeRTF=0;DocAll=0;HideQuals=0;AttPkg=1;ShowTests=0;ShowMaint=0;SuppressFOC=1;MatrixActive=0;SwimlanesActive=1;MatrixLineWidth=1;MatrixLocked=0;TConnectorNotation=UML 2.1;TExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;ProfileData=;MDGDgm=;STBLDgm=;ShowNotes=0;VisibleAttributeDetail=0;ShowOpRetType=1;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;SaveTag=DB04711C;"/>
+				<style2 value="ExcludeRTF=0;DocAll=0;HideQuals=0;AttPkg=1;ShowTests=0;ShowMaint=0;SuppressFOC=1;MatrixActive=0;SwimlanesActive=1;MatrixLineWidth=1;MatrixLocked=0;TConnectorNotation=UML 2.1;TExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;ProfileData=;MDGDgm=;STBLDgm=;ShowNotes=0;VisibleAttributeDetail=0;ShowOpRetType=1;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;SaveTag=D1690B8F;"/>
 				<swimlanes value="locked=false;orientation=0;width=0;inbar=false;names=false;color=0;bold=false;fcol=0;;cls=0;"/>
 				<matrixitems value="locked=false;matrixactive=false;swimlanesactive=true;width=1;"/>
 				<extendedProperties/>
 				<elements>
-					<element geometry="Left=271;Top=129;Right=361;Bottom=199;" subject="EAID_B503DD5A_4997_4323_8E06_9272851D7CFE" seqno="1" style="DUID=329C3DFB;"/>
+					<element geometry="Left=253;Top=385;Right=382;Bottom=455;" subject="EAID_9DB08EF4_8A52_4236_B426_2C74A7C797CE" seqno="1" style="DUID=456E7524;"/>
+					<element geometry="Left=363;Top=261;Right=453;Bottom=331;" subject="EAID_783065C3_7DAF_464e_90F0_9ABD5F350D9B" seqno="2" style="DUID=A2B87871;"/>
+					<element geometry="Left=271;Top=129;Right=361;Bottom=199;" subject="EAID_B503DD5A_4997_4323_8E06_9272851D7CFE" seqno="3" style="DUID=329C3DFB;"/>
 				</elements>
 			</diagram>
 		</diagrams>
