@@ -879,7 +879,42 @@ td.datePickerMonth {
 }
 
 .section {
-    border: 3px #000000;
+    border: 1px #000000;
+    border-style: dashed;
     margin: 10px;
     padding: 5px;
+    min-width: 300px;
+    min-height: 100px;
+}
+
+.propertyCell {
+    background-color: #00008b;
+    color: #ffffff;
+    min-height: 30px;
+    min-width: 30px;
+    text-align: right;
+    padding: 5px;
+}
+
+.environmentCell {
+    background-color: #f08080;
+    color: #ffffff;
+    min-height: 30px;
+    min-width: 30px;
+    text-align: center;
+    padding: 5px;
+}
+
+.environmentPropertyCell {
+    background-color: #90ee90;
+    min-height: 30px;
+    min-width: 30px;
+    text-align: center;
+    padding: 5px;
+}
+
+.propertyTable td {
+    min-height: 30px;
+    min-width: 30px;
+    margin: 5px;
 }
