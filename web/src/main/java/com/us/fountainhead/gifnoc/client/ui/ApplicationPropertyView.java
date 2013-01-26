@@ -13,6 +13,7 @@ import com.us.fountainhead.gifnoc.client.service.ApplicationEntityServiceClient;
 public class ApplicationPropertyView extends VerticalPanel implements ApplicationEntityServiceClient.FindAll {
 
     private VerticalPanel applicationPanel;
+    private VerticalPanel propertyPanel;
     private Button addApplication;
 
     public ApplicationPropertyView() {
@@ -23,11 +24,13 @@ public class ApplicationPropertyView extends VerticalPanel implements Applicatio
     private void init() {
         RootPanel.get("ApplicationPropertyView-layout").add(this);
         initApplicationPanel();
+        initPropertyPanel();
     }
 
     private void initApplicationPanel() {
         VerticalPanel p = new VerticalPanel();
         add(p);
+        p.addStyleName("section");
 
         applicationPanel = new VerticalPanel();
         p.add(applicationPanel);
@@ -62,13 +65,36 @@ public class ApplicationPropertyView extends VerticalPanel implements Applicatio
         JsArray<Application> applicationList = response.getApplicationList();
         for(int i=0; i<applicationList.length(); i++) {
             Application application = applicationList.get(i);
-            applicationPanel.add(new Label(application.getName()));
+            final ApplicationAnchor anchor = new ApplicationAnchor(application);
+            anchor.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        updatePropertyPanel(anchor.getApplication());
+                    }
+                }
+            );
+
+            applicationPanel.add(anchor);
         }
     }
 
     @Override
     public void onFindAllApplicationError(Throwable exception) {
         add(new Label(exception.getMessage()));
+    }
+
+    private void initPropertyPanel() {
+        propertyPanel = new VerticalPanel();
+        propertyPanel.addStyleName("section");
+        add(propertyPanel);
+    }
+
+    private void updatePropertyPanel(Application application) {
+        if(propertyPanel.getWidgetCount()>0) {
+            propertyPanel.remove(0);
+        }
+        propertyPanel.add(new ApplicationPropertyEditor(application));
     }
 
 }

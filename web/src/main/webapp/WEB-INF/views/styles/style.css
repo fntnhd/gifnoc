@@ -877,3 +877,9 @@ td.datePickerMonth {
     position:absolute;
     right:30px;    
 }
+
+.section {
+    border: 3px #000000;
+    margin: 10px;
+    padding: 5px;
+}
