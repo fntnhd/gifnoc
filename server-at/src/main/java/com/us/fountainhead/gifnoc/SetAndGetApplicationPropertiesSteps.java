@@ -47,24 +47,17 @@ public class SetAndGetApplicationPropertiesSteps {
     public void setupProperties(String appName, ExamplesTable environments, ExamplesTable propertyNames, ExamplesTable propertyValues) throws ValidationException {
         String envName, propertyName, propertyValue;
 
-        Application application = new Application();
-        application.setName(appName);
+        propertyService.addApplication(appName);
 
         for(Parameters row : environments.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);
-            Environment environment = new Environment();
-            environment.setName(envName);
-            application.addEnvironment(environment);
+            propertyService.addEnvironment(appName, envName);
         }
 
         for(Parameters row : propertyNames.getRowsAsParameters()) {
             propertyName = row.valueAs("property", String.class);
-            Property property = new Property();
-            property.setName(propertyName);
-            application.addProperty(property);
+            propertyService.addProperty(appName, propertyName);
         }
-
-        propertyService.createApplication(application);
 
         for(Parameters row : propertyValues.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);

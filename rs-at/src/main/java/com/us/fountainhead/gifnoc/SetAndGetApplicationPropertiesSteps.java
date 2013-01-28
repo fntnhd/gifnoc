@@ -46,35 +46,33 @@ public class SetAndGetApplicationPropertiesSteps {
     public void setupProperties(String appName, ExamplesTable environments, ExamplesTable propertyNames, ExamplesTable propertyValues) throws IOException {
         String envName, propertyName, propertyValue;
 
-        JSONObject application = new JSONObject();
-        application.put("name", appName);
+        JSONObject request = new JSONObject();
+        request.put("applicationName", appName);
 
-        JSONArray environmentList = new JSONArray();
+        httpUtil.post("/propertyService/addApplication", request.toString());
+
         for(Parameters row : environments.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);
-            JSONObject environment = new JSONObject();
-            environment.put("name", envName);
-            environmentList.add(environment);
+            request = new JSONObject();
+            request.put("applicationName", appName);
+            request.put("environmentName", envName);
+            httpUtil.post("/propertyService/addEnvironment", request.toString());
         }
-        application.put("environmentList", environmentList);
 
-        JSONArray propertyList = new JSONArray();
         for(Parameters row : propertyNames.getRowsAsParameters()) {
             propertyName = row.valueAs("property", String.class);
-            JSONObject property = new JSONObject();
-            property.put("name", propertyName);
-            propertyList.add(property);
+            request = new JSONObject();
+            request.put("applicationName", appName);
+            request.put("propertyName", propertyName);
+            httpUtil.post("/propertyService/addProperty", request.toString());
         }
-        application.put("propertyList", propertyList);
-
-        httpUtil.post("/application/create", application.toString());
 
         for(Parameters row : propertyValues.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);
             propertyName = row.valueAs("property name", String.class);
             propertyValue = row.valueAs("property value", String.class);
 
-            JSONObject request = new JSONObject();
+            request = new JSONObject();
             request.put("app", appName);
             request.put("environment", envName);
             request.put("propertyName", propertyName);

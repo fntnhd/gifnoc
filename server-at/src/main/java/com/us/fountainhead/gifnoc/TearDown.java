@@ -36,7 +36,6 @@ public class TearDown {
             environmentPropertyDAO.delete(ep.getId());
         }
 
-
         environmentDAO.deleteAll();
         propertyDAO.deleteAll();
         applicationDAO.deleteAll();

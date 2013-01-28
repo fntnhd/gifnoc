@@ -21,21 +21,18 @@ public class PropertyServiceImpl implements PropertyService {
     @Autowired
     EnvironmentPropertyDAO environmentPropertyDAO;
 
+    @Autowired
+    EnvironmentDAO environmentDAO;
+
+    @Autowired
+    PropertyDAO propertyDAO;
+
     @PersistenceContext(unitName = "gifnocPU")
     private EntityManager em;
 
     private static final String UNDEFINED_PROPERTY_FORMAT = "Invalid property [{0}] for application [{1}] environment [{2}]";
+    private static final String INVALID_APP_FORMAT = "Invalid application name [{0}]";
 
-    /**
-     * createApplication
-     * @param application
-     * @return Application
-     * @see Application
-     */
-    @Override
-    public Application createApplication(Application application) throws ValidationException {
-        return applicationDAO.create(application);
-    }
 
     /**
      * setPropertyValue
@@ -49,42 +46,97 @@ public class PropertyServiceImpl implements PropertyService {
      * @see String
      */
     @Override
-    public void setPropertyValue(String appName, String envName, String propertyName, String propertyValue) throws ValidationException {
-        Query q = em.createQuery("select app from Application app where app.name=:appName");
+    public EnvironmentProperty setPropertyValue(String appName, String envName, String propertyName, String propertyValue) throws ValidationException {
+        EnvironmentProperty ep = null;
+
+        Query q = em.createQuery("select ep from EnvironmentProperty ep where ep.property.name=:propertyName and ep.environment.name=:envName and ep.environment.application.name=:appName");
         q.setParameter("appName", appName);
-        List<Application> appList = q.getResultList();
+        q.setParameter("envName", envName);
+        q.setParameter("propertyName", propertyName);
+        List<EnvironmentProperty> environmentPropertyList = q.getResultList();
 
-        if(appList.size() == 1) {
-            Application application = appList.get(0);
-            Environment environment = null;
-            Property property = null;
-            for(Environment e : application.getEnvironmentList()) {
-                if(e.getName().equals(envName)) {
-                    environment = e;
-                    break;
-                }
-            }
-            if(environment == null) {
-            }
-            for(Property p : application.getPropertyList()) {
-                if(p.getName().equals(propertyName)) {
-                    property = p;
-                    break;
-                }
-            }
-            if(property == null) {
-            }
-
-
-            EnvironmentProperty environmentProperty = new EnvironmentProperty();
-            environmentProperty.setEnvironment(environment);
-            environmentProperty.setProperty(property);
+        if(environmentPropertyList.size() == 1) {
+            EnvironmentProperty environmentProperty = environmentPropertyList.get(0);
             environmentProperty.setValue(propertyValue);
-            environmentProperty = environmentPropertyDAO.create(environmentProperty);
+            ep = environmentPropertyDAO.update(environmentProperty);
         }
         else {
+            MessageFormat messageFormat = new MessageFormat(INVALID_APP_FORMAT);
+            String[] inserts = new String[] {propertyName, appName, envName};
+            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
+            ValidationException validationException = new ValidationException(validationError);
+            throw validationException;
         }
 
+        return ep;
+    }
+
+    /**
+     * Add a new environment and one EnvironmentProperty for each defined property
+     *
+     * @param applicationName
+     * @param environmentName
+     * @return
+     * @throws ValidationException
+     */
+    @Override
+    public Environment addEnvironment(String applicationName, String environmentName) throws ValidationException {
+        Query q = em.createQuery("select a from Application a where a.name=:name");
+        q.setParameter("name", applicationName);
+        List<Application> applicationList = q.getResultList();
+        if(applicationList.size() != 1) {
+            MessageFormat messageFormat = new MessageFormat(UNDEFINED_PROPERTY_FORMAT);
+            String[] inserts = new String[] {applicationName};
+            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
+            ValidationException validationException = new ValidationException(validationError);
+            throw validationException;
+        }
+
+        Application app = applicationList.get(0);
+
+        Environment e = new Environment();
+        e.setName(environmentName);
+        app.addEnvironment(e);
+        e = environmentDAO.create(e);
+
+        for(Property p : app.getPropertyList()) {
+            EnvironmentProperty ep = new EnvironmentProperty();
+            ep.setEnvironment(e);
+            ep.setProperty(p);
+            environmentPropertyDAO.create(ep);
+        }
+
+        return e;
+    }
+
+    @Override
+    public Property addProperty(String applicationName, String propertyName) throws ValidationException {
+        Query q = em.createQuery("select a from Application a where a.name=:name");
+        q.setParameter("name", applicationName);
+        List<Application> applicationList = q.getResultList();
+        if(applicationList.size() != 1) {
+            MessageFormat messageFormat = new MessageFormat(UNDEFINED_PROPERTY_FORMAT);
+            String[] inserts = new String[] {applicationName};
+            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
+            ValidationException validationException = new ValidationException(validationError);
+            throw validationException;
+        }
+
+        Application app = applicationList.get(0);
+
+        Property p = new Property();
+        p.setName(propertyName);
+        app.addProperty(p);
+        p = propertyDAO.create(p);
+
+        for(Environment e : app.getEnvironmentList()) {
+            EnvironmentProperty ep = new EnvironmentProperty();
+            ep.setEnvironment(e);
+            ep.setProperty(p);
+            environmentPropertyDAO.create(ep);
+        }
+
+        return p;
     }
 
     /**
@@ -124,27 +176,19 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     /**
-     * getPropertyValues
-     * @param app
-     * @param environment
-     * @return EnvironmentProperty
-     * @see String
-     * @see String
+     *
+     *
+     * @param applicationName
+     * @return
+     * @throws ValidationException
      */
     @Override
-    public List<EnvironmentProperty> getPropertyValues(String app, String environment) throws ValidationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Application addApplication(String applicationName) throws ValidationException {
+        Application application = new Application();
+        application.setName(applicationName);
+
+        return applicationDAO.create(application);
     }
 
-    /**
-     * getSystemProperties
-     * @param app
-     * @return Property
-     * @see String
-     */
-    @Override
-    public List<Property> getSystemProperties(String app) throws ValidationException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }
