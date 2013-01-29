@@ -73,8 +73,8 @@ public class SetAndGetApplicationPropertiesSteps {
             propertyValue = row.valueAs("property value", String.class);
 
             request = new JSONObject();
-            request.put("app", appName);
-            request.put("environment", envName);
+            request.put("applicationName", appName);
+            request.put("environmentName", envName);
             request.put("propertyName", propertyName);
             request.put("propertyValue", propertyValue);
 
@@ -96,9 +96,9 @@ public class SetAndGetApplicationPropertiesSteps {
             propertyName = row.valueAs("property name", String.class);
 
             JSONObject request = new JSONObject();
-            request.put("app", appName);
-            request.put("environment", envName);
-            request.put("property", propertyName);
+            request.put("applicationName", appName);
+            request.put("environmentName", envName);
+            request.put("propertyName", propertyName);
 
             JSONObject response = httpUtil.post("/propertyService/getPropertyValue", request.toString());
             actualValues.add(response.getString("value"));
@@ -120,9 +120,9 @@ public class SetAndGetApplicationPropertiesSteps {
             propertyName = row.valueAs("property name", String.class);
 
             JSONObject request = new JSONObject();
-            request.put("app", appName);
-            request.put("environment", envName);
-            request.put("property", propertyName);
+            request.put("applicationName", appName);
+            request.put("environmentName", envName);
+            request.put("propertyName", propertyName);
 
             JSONObject response = httpUtil.post("/propertyService/getPropertyValue", request.toString());
             JSONArray errorList = response.getJSONArray("errorList");
