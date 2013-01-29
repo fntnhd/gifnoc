@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -29,9 +31,14 @@ public class SetAndGetApplicationPropertiesSteps {
 
     private List<String> actualValues;
 
+    private Map<String, Environment> environmentMap;
+    private Map<String, Property> propertyMap;
+
     @BeforeStory
     public void setUp() {
         actualValues = new ArrayList<String>();
+        environmentMap = new HashMap<String, Environment>();
+        propertyMap = new HashMap<String, Property>();
     }
 
     /**
@@ -47,24 +54,28 @@ public class SetAndGetApplicationPropertiesSteps {
     public void setupProperties(String appName, ExamplesTable environments, ExamplesTable propertyNames, ExamplesTable propertyValues) throws ValidationException {
         String envName, propertyName, propertyValue;
 
-        propertyService.addApplication(appName);
+        Application application = propertyService.addApplication(appName);
 
         for(Parameters row : environments.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);
-            propertyService.addEnvironment(appName, envName);
+            Environment environment = propertyService.addEnvironment(application, envName);
+            environmentMap.put(envName, environment);
         }
 
         for(Parameters row : propertyNames.getRowsAsParameters()) {
             propertyName = row.valueAs("property", String.class);
-            propertyService.addProperty(appName, propertyName);
+            Property property = propertyService.addProperty(application, propertyName);
+            propertyMap.put(propertyName, property);
         }
 
         for(Parameters row : propertyValues.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);
             propertyName = row.valueAs("property name", String.class);
             propertyValue = row.valueAs("property value", String.class);
+            Environment environment = environmentMap.get(envName);
+            Property property = propertyMap.get(propertyName);
 
-            propertyService.setPropertyValue(appName, envName, propertyName, propertyValue);
+            propertyService.setEnvironmentPropertyValue(environment, property, propertyValue);
         }
     }
 

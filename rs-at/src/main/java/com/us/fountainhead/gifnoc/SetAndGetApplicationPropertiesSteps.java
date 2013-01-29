@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -29,9 +31,14 @@ public class SetAndGetApplicationPropertiesSteps {
 
     private List<String> actualValues;
 
+    private Map<String, JSONObject> environmentMap;
+    private Map<String, JSONObject> propertyMap;
+
     @BeforeStory
     public void beforeStory() throws IOException {
         actualValues = new ArrayList<String>();
+        environmentMap = new HashMap<String, JSONObject>();
+        propertyMap = new HashMap<String, JSONObject>();
     }
 
     /**
@@ -49,22 +56,27 @@ public class SetAndGetApplicationPropertiesSteps {
         JSONObject request = new JSONObject();
         request.put("applicationName", appName);
 
-        httpUtil.post("/propertyService/addApplication", request.toString());
+        JSONObject response = httpUtil.post("/propertyService/addApplication", request.toString());
+        JSONObject application = response.getJSONObject("value");
 
         for(Parameters row : environments.getRowsAsParameters()) {
             envName = row.valueAs("environment", String.class);
             request = new JSONObject();
-            request.put("applicationName", appName);
+            request.put("application", application);
             request.put("environmentName", envName);
-            httpUtil.post("/propertyService/addEnvironment", request.toString());
+            response = httpUtil.post("/propertyService/addEnvironment", request.toString());
+            JSONObject environment = response.getJSONObject("value");
+            environmentMap.put(envName, environment);
         }
 
         for(Parameters row : propertyNames.getRowsAsParameters()) {
             propertyName = row.valueAs("property", String.class);
             request = new JSONObject();
-            request.put("applicationName", appName);
+            request.put("application", application);
             request.put("propertyName", propertyName);
-            httpUtil.post("/propertyService/addProperty", request.toString());
+            response = httpUtil.post("/propertyService/addProperty", request.toString());
+            JSONObject property = response.getJSONObject("value");
+            propertyMap.put(propertyName, property);
         }
 
         for(Parameters row : propertyValues.getRowsAsParameters()) {
@@ -72,13 +84,15 @@ public class SetAndGetApplicationPropertiesSteps {
             propertyName = row.valueAs("property name", String.class);
             propertyValue = row.valueAs("property value", String.class);
 
+            JSONObject environment = environmentMap.get(envName);
+            JSONObject property = propertyMap.get(propertyName);
+
             request = new JSONObject();
-            request.put("applicationName", appName);
-            request.put("environmentName", envName);
-            request.put("propertyName", propertyName);
+            request.put("environment", environment);
+            request.put("property", property);
             request.put("propertyValue", propertyValue);
 
-            httpUtil.post("/propertyService/setPropertyValue", request.toString());
+            httpUtil.post("/propertyService/setEnvironmentPropertyValue", request.toString());
         }
     }
 

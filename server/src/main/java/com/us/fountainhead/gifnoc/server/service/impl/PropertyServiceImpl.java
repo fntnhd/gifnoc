@@ -30,69 +30,63 @@ public class PropertyServiceImpl implements PropertyService {
     @PersistenceContext(unitName = "gifnocPU")
     private EntityManager em;
 
-    private static final String UNDEFINED_PROPERTY_FORMAT = "Invalid property [{0}] for application [{1}] environment [{2}]";
-    private static final String INVALID_APP_FORMAT = "Invalid application name [{0}]";
-
+    private static final String UNDEFINED_PROPERTY_MESSAGE = "Invalid property [{0}] for application [{1}] environment [{2}]";
+    private static final String INVALID_APPLICATION_MESSAGE = "Invalid application [{0}]";
+    private static final String DUPLICATE_APPLICATION_MESSAGE = "Application with name [{0}] already exists";
+    private static final String DUPLICATE_PROPERTY_MESSAGE = "Property with name [{0}] already exists for application [{1}]";
+    private static final String DUPLICATE_ENVIRONMENT_MESSAGE = "Environment with name [{0}] already exists for application [{1}]";
+    private static final String NO_ENVIRONMENT_PROPERTIES_MESSAGE = "No properties exist for environment [{0}] and application [{1}]";
 
     /**
-     * setPropertyValue
-     * @param appName
-     * @param envName
-     * @param propertyName
+     *
+     * @param environment
+     * @param property
      * @param propertyValue
-     * @see String
-     * @see String
-     * @see String
-     * @see String
+     * @throws ValidationException
      */
     @Override
-    public EnvironmentProperty setPropertyValue(String appName, String envName, String propertyName, String propertyValue) throws ValidationException {
-        EnvironmentProperty ep = null;
+    public void setEnvironmentPropertyValue(Environment environment, Property property, String propertyValue) throws ValidationException {
 
-        Query q = em.createQuery("select ep from EnvironmentProperty ep where ep.property.name=:propertyName and ep.environment.name=:envName and ep.environment.application.name=:appName");
-        q.setParameter("appName", appName);
-        q.setParameter("envName", envName);
-        q.setParameter("propertyName", propertyName);
+        Query q = em.createQuery("select ep from EnvironmentProperty ep where ep.property.id=:propertyId and ep.environment.id=:envId");
+        q.setParameter("propertyId", property.getId());
+        q.setParameter("envId", environment.getId());
         List<EnvironmentProperty> environmentPropertyList = q.getResultList();
 
         if(environmentPropertyList.size() == 1) {
             EnvironmentProperty environmentProperty = environmentPropertyList.get(0);
             environmentProperty.setValue(propertyValue);
-            ep = environmentPropertyDAO.update(environmentProperty);
+            environmentPropertyDAO.update(environmentProperty);
         }
         else {
-            MessageFormat messageFormat = new MessageFormat(INVALID_APP_FORMAT);
-            String[] inserts = new String[] {propertyName, appName, envName};
-            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
-            ValidationException validationException = new ValidationException(validationError);
-            throw validationException;
+            String[] inserts = new String[] {property.getName(), property.getApplication().getName(), environment.getName()};
+            throw validationException(UNDEFINED_PROPERTY_MESSAGE, inserts);
         }
-
-        return ep;
     }
+
 
     /**
      * Add a new environment and one EnvironmentProperty for each defined property
      *
-     * @param applicationName
+     * @param application
      * @param environmentName
      * @return
      * @throws ValidationException
      */
     @Override
-    public Environment addEnvironment(String applicationName, String environmentName) throws ValidationException {
-        Query q = em.createQuery("select a from Application a where a.name=:name");
-        q.setParameter("name", applicationName);
-        List<Application> applicationList = q.getResultList();
-        if(applicationList.size() != 1) {
-            MessageFormat messageFormat = new MessageFormat(UNDEFINED_PROPERTY_FORMAT);
-            String[] inserts = new String[] {applicationName};
-            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
-            ValidationException validationException = new ValidationException(validationError);
-            throw validationException;
+    public Environment addEnvironment(Application application, String environmentName) throws ValidationException {
+        Application app = applicationDAO.findById(application.getId());
+
+        if(app==null) {
+            String[] inserts = new String[] {application.getId().toString()};
+            throw validationException(INVALID_APPLICATION_MESSAGE, inserts);
         }
 
-        Application app = applicationList.get(0);
+        for(Environment e : app.getEnvironmentList()) {
+            if(e.getName().equals(environmentName)) {
+                String[] inserts = new String[] {environmentName, app.getName()};
+                throw validationException(DUPLICATE_ENVIRONMENT_MESSAGE, inserts);
+            }
+        }
 
         Environment e = new Environment();
         e.setName(environmentName);
@@ -109,20 +103,28 @@ public class PropertyServiceImpl implements PropertyService {
         return e;
     }
 
+    /**
+     *
+     * @param application
+     * @param propertyName
+     * @return
+     * @throws ValidationException
+     */
     @Override
-    public Property addProperty(String applicationName, String propertyName) throws ValidationException {
-        Query q = em.createQuery("select a from Application a where a.name=:name");
-        q.setParameter("name", applicationName);
-        List<Application> applicationList = q.getResultList();
-        if(applicationList.size() != 1) {
-            MessageFormat messageFormat = new MessageFormat(UNDEFINED_PROPERTY_FORMAT);
-            String[] inserts = new String[] {applicationName};
-            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
-            ValidationException validationException = new ValidationException(validationError);
-            throw validationException;
+    public Property addProperty(Application application, String propertyName) throws ValidationException {
+        Application app = applicationDAO.findById(application.getId());
+
+        if(app==null) {
+            String[] inserts = new String[] {application.getId().toString()};
+            throw validationException(INVALID_APPLICATION_MESSAGE, inserts);
         }
 
-        Application app = applicationList.get(0);
+        for(Property p : app.getPropertyList()) {
+            if(p.getName().equals(propertyName)) {
+                String[] inserts = new String[] {propertyName, app.getName()};
+                throw validationException(DUPLICATE_PROPERTY_MESSAGE, inserts);
+            }
+        }
 
         Property p = new Property();
         p.setName(propertyName);
@@ -137,6 +139,54 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         return p;
+    }
+
+
+    /**
+     *
+     * @param applicationName
+     * @return
+     * @throws ValidationException
+     */
+    @Override
+    public Application addApplication(String applicationName) throws ValidationException {
+        Query q = em.createQuery("select a from Application a where a.name=:name");
+        q.setParameter("name", applicationName);
+        List<Application> applicationList = q.getResultList();
+
+        if(applicationList.size() > 0) {
+            String[] inserts = new String[] {applicationName};
+            throw validationException(DUPLICATE_APPLICATION_MESSAGE, inserts);
+        }
+
+        Application application = new Application();
+        application.setName(applicationName);
+
+        return applicationDAO.create(application);
+    }
+
+
+    /**
+     *
+     * @param applicationName
+     * @param environmentName
+     * @return
+     * @throws ValidationException
+     */
+    @Override
+    public List<EnvironmentProperty> getPropertiesForEnvironment(String applicationName, String environmentName) throws ValidationException {
+        Query q = em.createQuery("select ep from EnvironmentProperty ep where ep.environment.name=:environmentName and ep.environment.application.name=:applicationName");
+        q.setParameter("environmentName", environmentName);
+        q.setParameter("applicationName", applicationName);
+        List<EnvironmentProperty> environmentPropertyList = q.getResultList();
+
+        if(environmentPropertyList.size() == 0) {
+            String[] inserts = new String[] {environmentName, applicationName};
+            throw validationException(NO_ENVIRONMENT_PROPERTIES_MESSAGE, inserts);
+        }
+
+        return environmentPropertyList;
+
     }
 
     /**
@@ -164,11 +214,8 @@ public class PropertyServiceImpl implements PropertyService {
             propertyValue = environmentProperty.getValue();
         }
         else {
-            MessageFormat messageFormat = new MessageFormat(UNDEFINED_PROPERTY_FORMAT);
             String[] inserts = new String[] {propertyName, appName, envName};
-            ValidationError validationError = new ValidationError(messageFormat.format(inserts));
-            ValidationException validationException = new ValidationException(validationError);
-            throw validationException;
+            throw validationException(UNDEFINED_PROPERTY_MESSAGE, inserts);
         }
 
         return propertyValue;
@@ -177,17 +224,14 @@ public class PropertyServiceImpl implements PropertyService {
 
     /**
      *
-     *
-     * @param applicationName
+     * @param message
+     * @param inserts
      * @return
-     * @throws ValidationException
      */
-    @Override
-    public Application addApplication(String applicationName) throws ValidationException {
-        Application application = new Application();
-        application.setName(applicationName);
-
-        return applicationDAO.create(application);
+    private ValidationException validationException(String message, String[] inserts) {
+        MessageFormat messageFormat = new MessageFormat(message);
+        ValidationError validationError = new ValidationError(messageFormat.format(inserts));
+        return new ValidationException(validationError);
     }
 
 
