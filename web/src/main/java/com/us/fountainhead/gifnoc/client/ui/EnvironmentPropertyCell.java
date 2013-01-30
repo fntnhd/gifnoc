@@ -19,6 +19,9 @@ public class EnvironmentPropertyCell extends FocusPanel {
         init();
     }
 
+    /**
+     * Initialize the view
+     */
     private void init() {
         addStyleName("environmentPropertyCell");
         label = new Label();
@@ -28,23 +31,30 @@ public class EnvironmentPropertyCell extends FocusPanel {
                 new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-                        update();
+                        setEnvironmentPropertyValue();
                     }
                 }
         );
     }
 
+    /**
+     * Set the environment property
+     * @param environmentProperty
+     */
     public void setEnvironmentProperty(EnvironmentProperty environmentProperty) {
         this.environmentProperty = environmentProperty;
         label.setText(environmentProperty.getValue());
     }
 
+    /**
+     *
+     * @return EnvironmentProperty
+     */
     public EnvironmentProperty getEnvironmentProperty() {
         return environmentProperty;
     }
 
-    public void update() {
-        new UpdateEnvironmentPropertyView(this).center();
+    public void setEnvironmentPropertyValue() {
+        new SetEnvironmentPropertyValueView(this).center();
     }
-
 }

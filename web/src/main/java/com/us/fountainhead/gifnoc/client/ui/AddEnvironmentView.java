@@ -3,12 +3,12 @@ package com.us.fountainhead.gifnoc.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import com.us.fountainhead.gifnoc.client.entity.Environment;
-import com.us.fountainhead.gifnoc.client.service.EnvironmentEntityServiceClient;
+import com.us.fountainhead.gifnoc.client.service.PropertyServiceClient;
 
 /**
+ *
  */
-public class AddEnvironmentView extends PopupPanel implements EnvironmentEntityServiceClient.Create  {
+public class AddEnvironmentView extends PopupPanel implements PropertyServiceClient.AddEnvironment {
 
     private VerticalPanel layout;
     private TextBox name;
@@ -21,11 +21,13 @@ public class AddEnvironmentView extends PopupPanel implements EnvironmentEntityS
     }
 
     private void init() {
+        setModal(true);
+
         layout = new VerticalPanel();
         setWidget(layout);
 
         name = new TextBox();
-        layout.add(new Label("Name"));
+        layout.add(new Label("Environment Name"));
         layout.add(name);
 
         add = new Button();
@@ -43,21 +45,22 @@ public class AddEnvironmentView extends PopupPanel implements EnvironmentEntityS
     }
 
     private void add(String name) {
-        Environment environment = (Environment) Environment.createObject();
-        environment.setName(name);
-        environment.setApplication(parent.getApplication());
-
-        new EnvironmentEntityServiceClient().create(environment, this);
+        new PropertyServiceClient().addEnvironment(parent.getApplication(), name, this);
     }
 
     @Override
-    public void onCreateEnvironmentResponse(EnvironmentEntityServiceClient.CreateResponse response) {
-        hide();
-        parent.insertEnvironment(response.getEnvironment());
+    public void onAddEnvironment(PropertyServiceClient.AddEnvironmentResponse response) {
+        if(response.hasErrors()) {
+            ServiceResponseErrorHandler.addErrorMessages(response, layout);
+        }
+        else {
+            hide();
+            parent.insertEnvironment(response.getValue());
+        }
     }
 
     @Override
-    public void onCreateEnvironmentError(Throwable exception) {
+    public void onAddEnvironmentError(Throwable exception) {
         layout.add(new Label(exception.getMessage()));
     }
 }

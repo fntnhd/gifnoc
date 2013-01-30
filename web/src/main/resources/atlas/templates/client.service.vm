@@ -1,10 +1,10 @@
 package ${context.getProperty("namespace")}.client.service;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.*;
 import ${context.getProperty("namespace")}.client.entity.*;
-import java.util.List;
 
 /**
  * Responsible for invoking the ${type.name} REST service
@@ -55,7 +55,7 @@ public class ${type.name}Client extends ServiceClient {
         protected ${util.capitalize(${op.name})}Response() {}
 #if(!${op.returnType.equals("void")})
 #if(${op.returnMany})
-#set($returnType = "List<" + ${op.returnType} + ">")
+#set($returnType = "JsArray<" + ${op.returnType} + ">")
 #else
 #set($returnType = ${op.returnType})
 #end

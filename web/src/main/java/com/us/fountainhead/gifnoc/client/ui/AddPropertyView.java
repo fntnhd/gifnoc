@@ -3,12 +3,11 @@ package com.us.fountainhead.gifnoc.client.ui;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import com.us.fountainhead.gifnoc.client.entity.Property;
-import com.us.fountainhead.gifnoc.client.service.PropertyEntityServiceClient;
+import com.us.fountainhead.gifnoc.client.service.PropertyServiceClient;
 
 /**
  */
-public class AddPropertyView extends PopupPanel implements PropertyEntityServiceClient.Create  {
+public class AddPropertyView extends PopupPanel implements PropertyServiceClient.AddProperty  {
 
     private VerticalPanel layout;
     private TextBox name;
@@ -21,11 +20,13 @@ public class AddPropertyView extends PopupPanel implements PropertyEntityService
     }
 
     private void init() {
+        setModal(true);
+
         layout = new VerticalPanel();
         setWidget(layout);
 
         name = new TextBox();
-        layout.add(new Label("Name"));
+        layout.add(new Label("Property Name"));
         layout.add(name);
 
         add = new Button();
@@ -43,21 +44,22 @@ public class AddPropertyView extends PopupPanel implements PropertyEntityService
     }
 
     private void add(String name) {
-        Property property = (Property) Property.createObject();
-        property.setName(name);
-        property.setApplication(parent.getApplication());
-
-        new PropertyEntityServiceClient().create(property, this);
+        new PropertyServiceClient().addProperty(parent.getApplication(), name, this);
     }
 
     @Override
-    public void onCreatePropertyResponse(PropertyEntityServiceClient.CreateResponse response) {
-        hide();
-        parent.insertProperty(response.getProperty());
+    public void onAddProperty(PropertyServiceClient.AddPropertyResponse response) {
+        if(response.hasErrors()) {
+            ServiceResponseErrorHandler.addErrorMessages(response, layout);
+        }
+        else {
+            hide();
+            parent.insertProperty(response.getValue());
+        }
     }
 
     @Override
-    public void onCreatePropertyError(Throwable exception) {
+    public void onAddPropertyError(Throwable exception) {
         layout.add(new Label(exception.getMessage()));
     }
 }

@@ -45,7 +45,7 @@ public class PropertyServiceImpl implements PropertyService {
      * @throws ValidationException
      */
     @Override
-    public void setEnvironmentPropertyValue(Environment environment, Property property, String propertyValue) throws ValidationException {
+    public EnvironmentProperty setEnvironmentPropertyValue(Environment environment, Property property, String propertyValue) throws ValidationException {
 
         Query q = em.createQuery("select ep from EnvironmentProperty ep where ep.property.id=:propertyId and ep.environment.id=:envId");
         q.setParameter("propertyId", property.getId());
@@ -55,7 +55,7 @@ public class PropertyServiceImpl implements PropertyService {
         if(environmentPropertyList.size() == 1) {
             EnvironmentProperty environmentProperty = environmentPropertyList.get(0);
             environmentProperty.setValue(propertyValue);
-            environmentPropertyDAO.update(environmentProperty);
+            return environmentPropertyDAO.update(environmentProperty);
         }
         else {
             String[] inserts = new String[] {property.getName(), property.getApplication().getName(), environment.getName()};
@@ -187,6 +187,19 @@ public class PropertyServiceImpl implements PropertyService {
 
         return environmentPropertyList;
 
+    }
+
+    /**
+     *
+     * @param application
+     * @return
+     * @throws ValidationException
+     */
+    @Override
+    public List<EnvironmentProperty> getEnvironmentPropertiesForApplication(Application application) throws ValidationException {
+        Query q = em.createQuery("select distinct ep from EnvironmentProperty ep where ep.property.application.id=:applicationId");
+        q.setParameter("applicationId", application.getId());
+        return q.getResultList();
     }
 
     /**

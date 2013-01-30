@@ -10,7 +10,8 @@ import com.us.fountainhead.gifnoc.client.service.ApplicationEntityServiceClient;
 /**
  * ApplicationPropertyView
  */
-public class ApplicationPropertyView extends VerticalPanel implements ApplicationEntityServiceClient.FindAll {
+public class ApplicationPropertyView extends VerticalPanel implements ApplicationEntityServiceClient.FindAll,
+                                                                      ApplicationEntityServiceClient.FindById {
 
     private VerticalPanel applicationPanel;
     private VerticalPanel propertyPanel;
@@ -70,7 +71,7 @@ public class ApplicationPropertyView extends VerticalPanel implements Applicatio
                 new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-                        updatePropertyPanel(anchor.getApplication());
+                        applicationSelected(anchor.getApplication());
                     }
                 }
             );
@@ -90,11 +91,32 @@ public class ApplicationPropertyView extends VerticalPanel implements Applicatio
         add(propertyPanel);
     }
 
-    private void updatePropertyPanel(Application application) {
+    /**
+     * Handles application selected event
+     *
+     * @param application
+     */
+    private void applicationSelected(Application application) {
         if(propertyPanel.getWidgetCount()>0) {
             propertyPanel.remove(0);
         }
-        propertyPanel.add(new ApplicationPropertyEditor(application));
+
+    // Refresh the application on the page
+        new ApplicationEntityServiceClient().findById(application.getId(), this);
     }
 
+    /**
+     * Update the property editor
+     *
+     * @param response
+     */
+    @Override
+    public void onFindApplicationByIdResponse(ApplicationEntityServiceClient.FindByIdResponse response) {
+        propertyPanel.add(new ApplicationPropertyEditor(response.getApplication()));
+    }
+
+    @Override
+    public void onFindApplicationByIdError(Throwable exception) {
+        add(new Label(exception.getMessage()));
+    }
 }

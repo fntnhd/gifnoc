@@ -5,10 +5,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.us.fountainhead.gifnoc.client.entity.Application;
 import com.us.fountainhead.gifnoc.client.service.ApplicationEntityServiceClient;
+import com.us.fountainhead.gifnoc.client.service.PropertyServiceClient;
 
 /**
  */
-public class AddApplicationView extends PopupPanel implements ApplicationEntityServiceClient.Create  {
+public class AddApplicationView extends PopupPanel implements PropertyServiceClient.AddApplication {
 
     private VerticalPanel layout;
     private TextBox name;
@@ -21,6 +22,8 @@ public class AddApplicationView extends PopupPanel implements ApplicationEntityS
     }
 
     private void init() {
+        setModal(true);
+
         layout = new VerticalPanel();
         setWidget(layout);
 
@@ -43,20 +46,22 @@ public class AddApplicationView extends PopupPanel implements ApplicationEntityS
     }
 
     private void add(String name) {
-        Application application = (Application) Application.createObject();
-        application.setName(name);
-
-        new ApplicationEntityServiceClient().create(application, this);
+        new PropertyServiceClient().addApplication(name, this);
     }
 
     @Override
-    public void onCreateApplicationResponse(ApplicationEntityServiceClient.CreateResponse response) {
-        hide();
-        parent.findAllApplications();
+    public void onAddApplication(PropertyServiceClient.AddApplicationResponse response) {
+        if(response.hasErrors()) {
+            ServiceResponseErrorHandler.addErrorMessages(response, layout);
+        }
+        else {
+            hide();
+            parent.findAllApplications();
+        }
     }
 
     @Override
-    public void onCreateApplicationError(Throwable exception) {
+    public void onAddApplicationError(Throwable exception) {
         layout.add(new Label(exception.getMessage()));
     }
 }

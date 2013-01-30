@@ -2,6 +2,8 @@ package ${context.getProperty("namespace")}.server.entity;
 
 
 import org.codehaus.jackson.annotate.*;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 #if(${type.hasMany()})
 import java.util.List;
 import java.util.ArrayList;
@@ -79,6 +81,7 @@ public class ${type.name} extends ${type.getGeneralization().getName()} {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonSerialize(using=ToStringSerializer.class)
     public Long getId() {
         return id;
     }

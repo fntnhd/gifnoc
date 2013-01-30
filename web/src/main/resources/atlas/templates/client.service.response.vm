@@ -10,10 +10,13 @@ public abstract class ServiceResponse extends JavaScriptObject {
 
 protected ServiceResponse() {}
 
-public final native JsArray<ValidationError> getErrorList() /*-{
-    return this.errorList;
+    public final native JsArray<ValidationError> getErrorList() /*-{
+        return this.errorList;
     }-*/;
 
 
+    public final boolean hasErrors() {
+        return getErrorList().length() > 0;
+    }
 
 }
